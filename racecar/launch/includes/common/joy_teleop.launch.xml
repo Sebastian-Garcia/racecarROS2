@@ -8,6 +8,10 @@
 
   <node pkg="joy" exec="joy_node" name="joy_node" />
 
-  <node pkg="racecar" exec="joy_teleop.py" name="joy_teleop" />
+  <!-- <node pkg="racecar" exec="joy_teleop.py" name="joy_teleop" /> -->
+  <group>
+    <include file="$(find-pkg0prefix racecar)/launch/includes/common/joystick.launch.py"/>
+    <let name="joy_teleop_config" value="$(var joy_teleop_config)">
+  </group>
 
 </launch>
