@@ -1,0 +1,57 @@
+<!-- -*- mode: XML -*- -->
+<!-- run velodyne_pointcloud/CloudNodelet in a nodelet manager for a VLP-16 -->
+
+<launch>
+
+  <!-- declare arguments with default values -->
+  <arg name="calibration" default="$(find velodyne_pointcloud)/params/VLP16db.yaml"/>
+  <arg name="device_ip" default="" />
+  <arg name="frame_id" default="laser" />
+  <arg name="manager" default="$(var frame_id)_nodelet_manager" />
+  <arg name="max_range" default="130.0" />
+  <arg name="min_range" default="0.4" />
+  <arg name="pcap" default="" />
+  <arg name="port" default="2368" />
+  <arg name="read_fast" default="false" />
+  <arg name="read_once" default="false" />
+  <arg name="repeat_delay" default="0.0" />
+  <arg name="rpm" default="600.0" />
+  <arg name="laserscan_ring" default="-1" />
+  <arg name="laserscan_resolution" default="0.007" />
+
+  <group>
+    <!-- start nodelet manager and driver nodelets -->
+    <include file="$(find-pkg-prefix velodyne_driver)/launch/nodelet_manager.launch">
+      <let name="device_ip" value="$(var device_ip)"/>
+      <let name="frame_id" value="$(var frame_id)"/>
+      <let name="manager" value="$(var manager)" />
+      <let name="model" value="VLP16"/>
+      <let name="pcap" value="$(var pcap)"/>
+      <let name="port" value="$(var port)"/>
+      <let name="read_fast" value="$(var read_fast)"/>
+      <let name="read_once" value="$(var read_once)"/>
+      <let name="repeat_delay" value="$(var repeat_delay)"/>
+      <let name="rpm" value="$(var rpm)"/>
+    </include>
+  </group>
+
+  <group>
+  <!-- start cloud nodelet -->
+    <include file="$(find-pkg-prefix velodyne_pointcloud)/launch/cloud_nodelet.launch">
+      <let name="calibration" value="$(var calibration)"/>
+      <let name="manager" value="$(var manager)" />
+      <let name="max_range" value="$(var max_range)"/>
+      <let name="min_range" value="$(var min_range)"/>
+    </include>
+  </group>
+
+  <group>
+  <!-- start laserscan nodelet -->
+    <include file="$(find-pkg-prefix velodyne_pointcloud)/launch/laserscan_nodelet.launch">
+      <let name="manager" value="$(var manager)" />
+      <let name="ring" value="$(var laserscan_ring)"/>
+      <let name="resolution" value="$(var laserscan_resolution)"/>
+    </include>
+  </group>
+
+</launch>
