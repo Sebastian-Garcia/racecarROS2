@@ -1,54 +1,68 @@
-cmake_minimum_required(VERSION 2.8.3)
+cmake_minimum_required(VERSION 3.5)
 project(ackermann_cmd_mux)
-find_package(catkin REQUIRED COMPONENTS 
-	roscpp 
-	pluginlib 
-	nodelet 
-	dynamic_reconfigure 
-	ackermann_msgs
-	std_msgs
-	rospy
-)
 
-# pkg-config support
-find_package(PkgConfig)
-pkg_search_module(yaml-cpp REQUIRED yaml-cpp)
-
-if(NOT ${yaml-cpp_VERSION} VERSION_LESS "0.5")
-add_definitions(-DHAVE_NEW_YAMLCPP)
+# Default to C++14
+if(NOT CMAKE_CXX_STANDARD)
+  set(CMAKE_CXX_STANDARD 14)
 endif()
 
-# Dynamic reconfigure support
-generate_dynamic_reconfigure_options(cfg/reload.cfg)
+if(CMAKE_COMPILER_IS_GNUCXX OR CMAKE_CXX_COMPILER_ID MATCHES "Clang")
+  add_compile_options(-Wall -Wextra -Wpedantic)
+endif()
 
-catkin_package(
-   INCLUDE_DIRS include
-   LIBRARIES ${PROJECT_NAME}_nodelet
-   CATKIN_DEPENDS roscpp pluginlib nodelet dynamic_reconfigure ackermann_msgs rospy std_msgs
-   DEPENDS yaml-cpp
-)
+find_package(ament_cmake_ros REQUIRED)
+find_package(ackermann_msgs REQUIRED)
+find_package(rcl_interfaces REQUIRED)
+find_package(rclcpp REQUIRED)
+find_package(rclcpp_components REQUIRED)
+find_package(rcpputils REQUIRED)
+find_package(std_msgs REQUIRED)
 
-include_directories(include ${catkin_INCLUDE_DIRS} ${yaml-cpp_INCLUDE_DIRS})
+include_directories(include)
 
 # Nodelet library
-add_library(${PROJECT_NAME}_nodelet src/ackermann_cmd_mux_nodelet.cpp src/ackermann_cmd_subscribers.cpp)
-#add_dependencies(${PROJECT_NAME}_nodelet ackermann_msgs)
-add_dependencies(${PROJECT_NAME}_nodelet ${PROJECT_NAME}_gencfg)
+add_library(${PROJECT_NAME} SHARED src/ackermann_cmd_mux.cpp)
+ament_target_dependencies(${PROJECT_NAME}
+  ackermann_msgs
+  rcl_interfaces
+  rclcpp
+  rclcpp_components
+  rcpputils
+  std_msgs
+)
 
-target_link_libraries(${PROJECT_NAME}_nodelet ${catkin_LIBRARIES} ${yaml-cpp_LIBRARIES})
+rclcpp_components_register_node(${PROJECT_NAME}
+  PLUGIN "ackermann_cmd_mux::AckermannCmdMux"
+  EXECUTABLE ackermann_cmd_mux_node)
 
-install(TARGETS ${PROJECT_NAME}_nodelet
-        DESTINATION ${CATKIN_PACKAGE_LIB_DESTINATION}
+install(TARGETS ${PROJECT_NAME}
+  ARCHIVE DESTINATION lib
+  LIBRARY DESTINATION lib
+  RUNTIME DESTINATION bin
 )
 install(DIRECTORY include/${PROJECT_NAME}/
-        DESTINATION ${CATKIN_PACKAGE_INCLUDE_DESTINATION}
+  DESTINATION include/${PROJECT_NAME}
 )
-install(DIRECTORY plugins
-        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
+
+install(DIRECTORY config launch
+  DESTINATION share/${PROJECT_NAME}
 )
-install(DIRECTORY launch
-        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-)
-install(DIRECTORY param
-        DESTINATION ${CATKIN_PACKAGE_SHARE_DESTINATION}
-)
+
+if(BUILD_TESTING)
+  find_package(ament_lint_auto REQUIRED)
+  ament_lint_auto_find_test_dependencies()
+
+  find_package(ros_testing REQUIRED)
+
+  add_ros_test(test/test_ackermann_cmd_mux.py
+    TARGET test_ackermann_cmd_mux
+    TIMEOUT 30
+  )
+
+  add_ros_test(test/test_ackermann_cmd_mux_updates.py
+    TARGET test_ackermann_cmd_mux_updates
+    TIMEOUT 30
+  )
+endif()
+
+ament_package()

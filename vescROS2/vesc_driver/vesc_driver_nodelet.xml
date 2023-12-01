@@ -1,5 +1,6 @@
-<library path="lib/libvesc_driver_nodelet">
-  <class type="vesc_driver::VescDriverNodelet" base_class_type="nodelet::Nodelet">
-    <description>Vedder VESC motor controller interface nodelet.</description>
+<!-- ROS 2 equivalent, assuming VescDriverNodelet becomes a standalone node -->
+<executable name="vesc_driver_node" path="lib/vesc_driver/vesc_driver_node">
+  <class type="vesc_driver::VescDriverNode">
+    <description>Vedder VESC motor controller interface node.</description>
   </class>
-</library>
+</executable>
