@@ -65,12 +65,7 @@ VescDriver::VescDriver(const rclcpp::NodeOptions & options)
   fw_version_minor_(-1)
 {
   // get vesc serial port address
-  /* default to /tmp/ttyV0 for debug purpose
-   * use :
-   *  socat /dev/ttyACM0,raw,echo=0  SYSTEM:'tee in.txt |socat - "PTY,link=/tmp/ttyV0,raw,echo=0,waitslave" |tee out.txt'
-   * to sniff comunication data to and from vesc
-   */
-  std::string port = declare_parameter<std::string>("port", "/tmp/ttyV0");
+  std::string port = declare_parameter<std::string>("port", "/dev/ttyACM0");
 
   // attempt to connect to the serial port
   try {
@@ -162,15 +157,12 @@ void VescDriver::vescPacketCallback(const std::shared_ptr<VescPacket const> & pa
 
     auto state_msg = VescStateStamped();
     state_msg.header.stamp = now();
-
     state_msg.state.voltage_input = values->v_in();
-    state_msg.state.current_motor = values->avg_motor_current();
-    state_msg.state.current_input = values->avg_input_current();
-    state_msg.state.avg_id = values->avg_id();
-    state_msg.state.avg_iq = values->avg_iq();
-    state_msg.state.duty_cycle = values->duty_cycle_now();
+    state_msg.state.temperature_pcb = values->temp_pcb();
+    state_msg.state.current_motor = values->current_motor();
+    state_msg.state.current_input = values->current_in();
     state_msg.state.speed = values->rpm();
-
+    state_msg.state.duty_cycle = values->duty_now();
     state_msg.state.charge_drawn = values->amp_hours();
     state_msg.state.charge_regen = values->amp_hours_charged();
     state_msg.state.energy_drawn = values->watt_hours();
@@ -179,15 +171,6 @@ void VescDriver::vescPacketCallback(const std::shared_ptr<VescPacket const> & pa
     state_msg.state.distance_traveled = values->tachometer_abs();
     state_msg.state.fault_code = values->fault_code();
 
-    state_msg.state.pid_pos_now = values->pid_pos_now();
-    state_msg.state.controller_id = values->controller_id();
-
-    state_msg.state.ntc_temp_mos1 = values->temp_mos1();
-    state_msg.state.ntc_temp_mos2 = values->temp_mos2();
-    state_msg.state.ntc_temp_mos3 = values->temp_mos3();
-    state_msg.state.avg_vd = values->avg_vd();
-    state_msg.state.avg_vq = values->avg_vq();
-
     state_pub_->publish(state_msg);
   } else if (packet->name() == "FWVersion") {
     std::shared_ptr<VescPacketFWVersion const> fw_version =
@@ -195,23 +178,7 @@ void VescDriver::vescPacketCallback(const std::shared_ptr<VescPacket const> & pa
     // todo: might need lock here
     fw_version_major_ = fw_version->fwMajor();
     fw_version_minor_ = fw_version->fwMinor();
-
-    RCLCPP_INFO(
-      get_logger(),
-      "-=%s=- hardware paired %d",
-      fw_version->hwname().c_str(),
-      fw_version->paired()
-    );
   }
-
-  auto & clk = *this->get_clock();
-  RCLCPP_INFO_THROTTLE(
-    get_logger(),
-    clk,
-    5000,
-    "%s packet received",
-    packet->name().c_str()
-  );
 }
 
 void VescDriver::vescErrorCallback(const std::string & error)
@@ -299,8 +266,8 @@ void VescDriver::servoCallback(const Float64::SharedPtr servo)
 VescDriver::CommandLimit::CommandLimit(
   rclcpp::Node * node_ptr,
   const std::string & str,
-  const std::experimental::optional<double> & min_lower,
-  const std::experimental::optional<double> & max_upper)
+  const std::optional<double> & min_lower,
+  const std::optional<double> & max_upper)
 : node_ptr(node_ptr),
   logger(node_ptr->get_logger()),
   name(str)
