@@ -8,7 +8,7 @@
 
   <!-- VESC driver parameters 
   <arg name="port" default="/dev/ttyUSB0" />-->
-  <arg name="port" default="/dev/sensors/vesc" />
+  <arg name="port" default="/dev/ttyACM0" />
 
   <!-- VESC driver node -->
   <node pkg="vesc_driver" exec="vesc_driver_node" name="$(var node_name)" output="screen">
