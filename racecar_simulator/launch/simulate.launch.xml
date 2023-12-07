@@ -1,0 +1,7 @@
+<launch>
+  <!-- Listen to messages from joysicks -->
+  <node pkg="joy" name="joy_node" exec="joy_node"/>
+
+  <arg name="map" default="$(find-pkg-share racecar_simulator)/maps/state_basement.yaml"/>
+
+</launch>
