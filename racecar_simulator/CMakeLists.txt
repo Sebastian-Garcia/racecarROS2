@@ -1,10 +1,7 @@
 cmake_minimum_required(VERSION 3.5)
 project(racecar_simulator)
 
-# Default to C99
-if(NOT CMAKE_C_STANDARD)
-  set(CMAKE_C_STANDARD 99)
-endif()
+
 
 # Set C++ standard to 17
 set(CMAKE_CXX_STANDARD 17)
@@ -42,6 +39,7 @@ find_package(tf2_geometry_msgs REQUIRED)
 find_package(ackermann_msgs REQUIRED)
 find_package(sensor_msgs REQUIRED)
 find_package(geometry_msgs REQUIRED)
+find_package(nav_msgs REQUIRED)
 # uncomment the following section in order to fill in
 # further dependencies manually.
 # find_package(<dependency> REQUIRED)
@@ -54,7 +52,8 @@ ${tf2_ros_INCLUDE_DIRS}
 ${tf2_geometry_msgs_INCLUDE_DIRS}
 ${ackermann_msgs_INCLUDE_DIRS}
 ${sensor_msgs_INCLUDE_DIRS}
-${geometry_msgs_INCLUDE_DIRS})
+${geometry_msgs_INCLUDE_DIRS}
+${nav_msgs_INCLUDE_DIRS})
 
 # Add the library to ament package
 ament_target_dependencies(${PROJECT_NAME}
@@ -64,15 +63,19 @@ ament_target_dependencies(${PROJECT_NAME}
       tf2_geometry_msgs
       ackermann_msgs
       sensor_msgs
-      geometry_msgs)
+      geometry_msgs
+      nav_msgs)
 
 # Add the nodes
 file(GLOB NODE_SRC_FILES node/*.cpp)
 foreach(_node_file ${NODE_SRC_FILES})
 get_filename_component(_node_name ${_node_file} NAME_WE)
 add_executable(${_node_name} ${_node_file})
-ament_target_dependencies(${_node_name} ${PROJECT_NAME})
+target_link_libraries(${_node_name} ${PROJECT_NAME} ${rclcpp_LIBRARIES} ${geometry_msgs_LIBRARIES} ${nav_msgs_LIBRARIES} ${sensor_msgs_LIBRARIES} ${ackermann_msgs_LIBRARIES} ${tf2_LIBRARIES} ${tf2_ros_LIBRARIES} ${tf2_geometry_msgs_LIBRARIES})
 endforeach()
+
+
+
 
 # Install the library
 install(TARGETS ${PROJECT_NAME}
@@ -80,6 +83,10 @@ ARCHIVE DESTINATION lib
 LIBRARY DESTINATION lib
 RUNTIME DESTINATION bin
 )
+
+install(TARGETS simulate DESTINATION lib/${PROJECT_NAME})
+install(TARGETS ackermann_publisher DESTINATION lib/${PROJECT_NAME})
+
 install(DIRECTORY include/${PROJECT_NAME}/
 DESTINATION include/${PROJECT_NAME}
 )
@@ -95,6 +102,7 @@ DESTINATION share/${PROJECT_NAME}/
 )
 
 
+
 # Set the source and destination paths
 set(SHARE_DESTINATION ${CMAKE_INSTALL_PREFIX}/share/${PROJECT_NAME})
 
@@ -104,6 +112,13 @@ install(
   DESTINATION ${SHARE_DESTINATION}
   FILES_MATCHING PATTERN "*.xacro"
 )
+
+install(
+  DIRECTORY share/${PROJECT_NAME}/
+  DESTINATION ${SHARE_DESTINATION}
+  FILES_MATCHING PATTERN "*.yaml"
+)
+
 
 
 
