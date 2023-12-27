@@ -30,7 +30,7 @@ class WallFollower(Node):
         self.VELOCITY = self.get_parameter('velocity').get_parameter_value().double_value
         self.DESIRED_DISTANCE = self.get_parameter('desired_distance').get_parameter_value().double_value
 
-        self.get_logger().debug('My log message %s' % (self.DRIVE_TOPIC))
+        
 
         self.WALL_TOPIC = "/wall"
         self.P = 1.5
@@ -49,6 +49,8 @@ class WallFollower(Node):
         self.create_subscription(LaserScan, self.SCAN_TOPIC, self.laser_callback, 10)
 
     def laser_callback(self, laser_scan):
+        
+        self.get_logger().info('My log message is here')
         """
         Using laser data, this function computes
         and publishes a navigation command for the
@@ -131,11 +133,13 @@ class WallFollower(Node):
                 self.D * dy0dt
 
         # Create a drive command.
+        self.get_logger().info('My log message %f' % (self.VELOCITY))
         drive_forward = AckermannDriveStamped()
         drive_forward.drive.speed = self.VELOCITY
         drive_forward.drive.steering_angle = steering_angle
 
         # Publish the drive command.
+
         self.drive_pub.publish(drive_forward)
 
     def abc_to_points(self, a, b, c, xy):
