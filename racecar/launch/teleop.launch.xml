@@ -1,0 +1,28 @@
+<!-- -*- mode: XML -*- -->
+<launch>
+
+  <group>
+    <push-ros-namespace namespace="vesc" />
+    <!-- joystick node -->
+    <include file="$(find-pkg-share racecar)/launch/joy_teleop.launch.xml" ></include>
+
+    <!-- Spawn MUXs -->
+    <include file="$(find-pkg-share racecar)/launch/mux2.launch.py" ></include>
+
+    <!-- start electronic speed controller driver -->
+    <include file="$(find-pkg-share racecar)/launch/vesc.launch.xml" ></include>
+  </group>
+
+  
+  <group>
+    <!-- start laser scanner -->
+    <!-- <include file="$(find-pkg-prefix racecar)/launch/sensors.launch.xml" ></include> -->
+  </group>
+   
+
+  <group>
+    <!-- static transforms, e.g. base_link to imu -->
+    <include file="$(find-pkg-prefix racecar)/launch/static_transforms.launch.xml" />
+  </group>
+
+</launch>

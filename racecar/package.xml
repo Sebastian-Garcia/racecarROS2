@@ -1,5 +1,5 @@
 <?xml version="1.0"?>
-<package>
+<package format="3">
   <name>racecar</name>
   <version>0.0.1</version>
   <description>RACECAR launch scripts</description>
@@ -12,31 +12,20 @@
 
   <!-- <author email="jane.doe@example.com">Jane Doe</author> -->
 
-  <buildtool_depend>catkin</buildtool_depend>
+  <buildtool_depend>ament_python</buildtool_depend>
 
   <!--<build_depend></build_depend>-->
 
-  <run_depend>razor_imu_9dof</run_depend>
-  <run_depend>tf</run_depend>
+  <!-- <run_depend>razor_imu_9dof</run_depend> -->
   <run_depend>tf2_ros</run_depend>
   <run_depend>urg_node</run_depend>
   <run_depend>joy</run_depend>
-  <run_depend>rosbag</run_depend>
-  <run_depend>rostopic</run_depend>
-  <run_depend>rviz</run_depend>
-
-  <!-- specific to racecar-v1 -->
-  <!-- <run_depend>pointgrey_camera_driver</run_depend> -->
-  <!-- <run_depend>px4flow</run_depend> -->
-  <!-- <run_depend>pwm_sysfs_driver</run_depend> -->
+  <run_depend>rviz2</run_depend>
 
   <!-- specific to racecar-v2 -->
 
-  <!-- mapping -->
-  <run_depend>gmapping</run_depend>
-  <run_depend>hector_mapping</run_depend>
-  <run_depend>robot_pose_ekf</run_depend>
 
   <export>
+    <build_type>ament_python</build_type>
   </export>
 </package>
