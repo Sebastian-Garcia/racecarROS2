@@ -4,7 +4,6 @@
   <version>0.0.1</version>
   <description>RACECAR launch scripts</description>
 
-  <author>Michael Boulet</author>
   <maintainer email="boulet@ll.mit.edu">Michael Boulet</maintainer>
   <license>BSD</license>
 
@@ -17,10 +16,10 @@
   <!--<build_depend></build_depend>-->
 
   <!-- <run_depend>razor_imu_9dof</run_depend> -->
-  <run_depend>tf2_ros</run_depend>
-  <run_depend>urg_node</run_depend>
-  <run_depend>joy</run_depend>
-  <run_depend>rviz2</run_depend>
+  <exec_depend>tf2_ros</exec_depend>
+  <exec_depend>urg_node</exec_depend>
+  <exec_depend>joy</exec_depend>
+  <exec_depend>rviz2</exec_depend>
 
   <!-- specific to racecar-v2 -->
 
