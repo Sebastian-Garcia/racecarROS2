@@ -11,6 +11,8 @@
     <!-- export SCANNER_TYPE=hokuyo -->
   <group if="$(eval env('SCANNER_TYPE') == 'hokuyo')">
     <!-- Hokoyu laser -->
+
+    
     <node pkg="urg_node" exec="urg_node" name="laser_node" />
   </group>
 

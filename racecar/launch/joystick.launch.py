@@ -22,8 +22,8 @@ import launch_ros.actions
 def generate_launch_description():
 
     parameters_file = os.path.join(
-        get_package_share_directory('joy_teleop'),
-        'config', 'joy_teleop_example.yaml'
+        get_package_share_directory('racecar'),
+        'config', 'joy_teleop.yaml'
     )
 
     ld = LaunchDescription([
@@ -32,11 +32,11 @@ def generate_launch_description():
     ])
 
     ld.add_action(launch_ros.actions.Node(
-            package='joy_teleop', executable='joy_teleop',
+            package='racecar', executable='joy_teleop',
             parameters=[launch.substitutions.LaunchConfiguration('teleop_config')]))
 
     ld.add_action(launch_ros.actions.Node(
-            package='joy_teleop', executable='incrementer_server',
+            package='racecar', executable='incrementer_server',
             name='incrementer', namespace='torso_controller'))
 
     return ld

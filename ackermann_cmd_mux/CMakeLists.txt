@@ -18,6 +18,13 @@ find_package(rclcpp_components REQUIRED)
 find_package(rcpputils REQUIRED)
 find_package(std_msgs REQUIRED)
 
+
+
+install(PROGRAMS  
+  src/throttle_interpolator.py  
+  DESTINATION lib/${PROJECT_NAME} )
+
+
 include_directories(include)
 
 # Nodelet library

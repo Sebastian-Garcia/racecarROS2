@@ -112,7 +112,7 @@ def main(args=None):
         rclpy.spin(ti)
         rclpy.shutdown()
 
-    except rclpy.ROSInterruptException:
+    except:
         pass
 
 # Boilerplate node spin up. 

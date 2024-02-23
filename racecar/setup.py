@@ -29,7 +29,10 @@ setup(
             "safetyRelay = racecar.safetyRelay:main",
             "teleopRelay = racecar.teleopRelay:main",
             "navRelay = racecar.navRelay:main",
-            "defaultCmd = racecar.defaultCmd:main"
+            "defaultCmd = racecar.defaultCmd:main",
+            "joy_teleop = racecar.joy_teleop:main",
+            "incrementer_server = racecar.incrementer_server:main"
+
         ],
     },
     
