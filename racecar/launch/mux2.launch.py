@@ -10,67 +10,76 @@ from launch.actions import DeclareLaunchArgument
 from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration
 
+
+#TODO: remove arguments for each, and hardcode them directly in each specific relay file:
+
 def generate_launch_description():
     return LaunchDescription([
         # Chain the MUXs
         Node(
-            package='topic_tools',
-            executable='relay',
+            package='racecar',
+            executable='chainRelay',
             name='mux_chainer',
             output='screen',
-            arguments=[
-                '/vesc/high_level/ackermann_cmd_mux/output',
-                '/vesc/low_level/ackermann_cmd_mux/input/navigation'
-            ]
+            # arguments=[
+            #     '/vesc/high_level/ackermann_cmd_mux/output',
+            #     '/vesc/low_level/ackermann_cmd_mux/input/navigation'
+            # ]
         ),
 
         # Define mappings for backwards compatibility
         Node(
-            package='topic_tools',
-            executable='relay',
+            package='racecar',
+            executable='safetyRelay',
             name='mux_topic_backward_compat_safety',
             output='screen',
-            arguments=[
-                '/vesc/ackermann_cmd_mux/input/safety',
-                '/vesc/low_level/ackermann_cmd_mux/input/safety'
-            ]
+            # arguments=[
+            #     '/vesc/ackermann_cmd_mux/input/safety',
+            #     '/vesc/low_level/ackermann_cmd_mux/input/safety'
+            # ]
         ),
         Node(
-            package='topic_tools',
-            executable='relay',
+            package='racecar',
+            executable='teleopRelay',
             name='mux_topic_backward_compat_teleop',
             output='screen',
-            arguments=[
-                '/vesc/ackermann_cmd_mux/input/teleop',
-                '/vesc/low_level/ackermann_cmd_mux/input/teleop'
-            ]
+            # arguments=[
+            #     '/vesc/ackermann_cmd_mux/input/teleop',
+            #     '/vesc/low_level/ackermann_cmd_mux/input/teleop'
+            # ]
         ),
         Node(
-            package='topic_tools',
-            executable='relay',
+            package='racecar',
+            executable='navRelay',
             name='mux_topic_backward_compat_navigation',
             output='screen',
-            arguments=[
-                '/vesc/ackermann_cmd_mux/input/navigation',
-                '/vesc/high_level/ackermann_cmd_mux/input/nav_0'
-            ]
+            # arguments=[
+            #     '/vesc/ackermann_cmd_mux/input/navigation',
+            #     '/vesc/high_level/ackermann_cmd_mux/input/nav_0'
+            # ]
         ),
 
-        # Default (zero) ackermann command for high level MUX
+        # # Default (zero) ackermann command for high level MUX
+        # Node(
+        #     package='ros2topic',
+        #     executable='ros2topic',
+        #     name='zero_ackermann_cmd',
+        #     output='screen',
+        #     arguments=[
+        #         'pub',
+        #         '-r', '6',
+        #         '/high_level/ackermann_cmd_mux/input/default',
+        #         'ackermann_msgs/msg/AckermannDriveStamped',
+        #         '{"header": {"stamp": {"sec": 0, "nanosec": 0}}, "drive": {"steering_angle": 0.0, "speed": 0.0}}'
+        #     ]
+        # ),
         Node(
-            package='ros2topic',
-            executable='ros2topic',
+            package='racecar',
+            executable='defaultCmd',
             name='zero_ackermann_cmd',
-            output='screen',
-            arguments=[
-                'pub',
-                '-r', '6',
-                '/high_level/ackermann_cmd_mux/input/default',
-                'ackermann_msgs/msg/AckermannDriveStamped',
-                '{"header": {"stamp": {"sec": 0, "nanosec": 0}}, "drive": {"steering_angle": 0.0, "speed": 0.0}}'
-            ]
+            output='screen'
         ),
-
+        
         # High level MUX
         Node(
             package='ackermann_cmd_mux',

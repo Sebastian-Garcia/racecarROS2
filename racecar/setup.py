@@ -4,7 +4,6 @@ import os
 package_name = 'racecar'
 
 
-
 setup(
     name=package_name,
     version='0.0.0',
@@ -26,7 +25,11 @@ setup(
     tests_require=['pytest'],
     entry_points={
         'console_scripts': [
-        
+            "chainRelay = racecar.chainRelay:main",
+            "safetyRelay = racecar.safetyRelay:main",
+            "teleopRelay = racecar.teleopRelay:main",
+            "navRelay = racecar.navRelay:main",
+            "defaultCmd = racecar.defaultCmd:main"
         ],
     },
     
