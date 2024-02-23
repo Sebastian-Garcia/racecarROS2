@@ -26,6 +26,11 @@ def generate_launch_description():
         'config', 'joy_teleop.yaml'
     )
 
+    joy_parameters_file = os.path.join(
+        get_package_share_directory('joy'),
+        'config', 'joy-params.yaml'
+    )
+
     ld = LaunchDescription([
         launch.actions.DeclareLaunchArgument('cmd_vel', default_value='input_joy/cmd_vel'),
         launch.actions.DeclareLaunchArgument('teleop_config', default_value=parameters_file),
@@ -38,5 +43,10 @@ def generate_launch_description():
     ld.add_action(launch_ros.actions.Node(
             package='racecar', executable='incrementer_server',
             name='incrementer', namespace='torso_controller'))
+    
+    ld.add_action(launch_ros.actions.Node(
+        package='joy', node_executable='joy_node',
+        output='both', parameters=[joy_parameters_file]
+    ))
 
     return ld
