@@ -9,11 +9,25 @@ from launch_ros.actions import Node
 from launch.actions import DeclareLaunchArgument
 from launch.conditions import IfCondition
 from launch.substitutions import LaunchConfiguration
-
-
+import os
+from ament_index_python.packages import get_package_share_directory
 #TODO: remove arguments for each, and hardcode them directly in each specific relay file:
 
 def generate_launch_description():
+
+    high_level_parameters_file = os.path.join(
+        get_package_share_directory('racecar'),
+        'config', 'high_level_mux.yaml'
+    )
+
+    low_level_parameters_file = os.path.join(
+        get_package_share_directory('racecar'),
+        'config', 'low_level_mux.yaml'
+    )
+
+
+
+
     return LaunchDescription([
         # Chain the MUXs
         Node(
@@ -87,7 +101,7 @@ def generate_launch_description():
             name='high_level_mux',
             namespace='high_level',
             output='screen',
-            parameters=[{'config_file': 'racecar/config/high_level_mux.yaml'}]
+            parameters=[high_level_parameters_file]
         ),
 
         # Low level MUX
@@ -97,6 +111,6 @@ def generate_launch_description():
             name='low_level_mux',
             namespace='low_level',
             output='screen',
-            parameters=[{'config_file': 'racecar/config/low_level_mux.yaml'}]
+            parameters=[low_level_parameters_file]
         ),
     ])

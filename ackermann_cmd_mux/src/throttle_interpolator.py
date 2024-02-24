@@ -110,6 +110,7 @@ def main(args=None):
         rclpy.init(args=args)
         ti = InterpolateThrottle()
         rclpy.spin(ti)
+        ti.destroy_node()
         rclpy.shutdown()
 
     except:
