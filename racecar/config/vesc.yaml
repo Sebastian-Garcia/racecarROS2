@@ -22,7 +22,7 @@
     vesc_to_odom/publish_tf: false
 
     # car wheelbase is about 25cm 
-    wheelbase: .25
+    wheelbase: 0.25
 
     vesc_driver:
       port: /dev/ttyVESC

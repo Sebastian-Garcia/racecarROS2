@@ -1,4 +1,4 @@
-/joy_teleop:
+/**:
   ros__parameters:
    # Default mode - Stop for safety
    default:

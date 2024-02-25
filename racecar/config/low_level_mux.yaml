@@ -5,7 +5,7 @@
 #   priority:       Priority: an UNIQUE unsigned integer from 0 (lowest) to MAX_INT 
 #   short_desc:     Short description (optional)
 
-/ackermann_cmd_mux:
+/**:
   ros__parameters:
     subscribers:
         Teleoperation:

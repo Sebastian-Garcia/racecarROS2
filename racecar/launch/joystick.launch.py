@@ -40,12 +40,12 @@ def generate_launch_description():
             package='racecar', executable='joy_teleop',
             parameters=[launch.substitutions.LaunchConfiguration('teleop_config')]))
 
-    ld.add_action(launch_ros.actions.Node(
-            package='racecar', executable='incrementer_server',
-            name='incrementer', namespace='torso_controller'))
+    # ld.add_action(launch_ros.actions.Node(
+    #         package='racecar', executable='incrementer_server',
+    #         name='incrementer', namespace='torso_controller'))
     
     ld.add_action(launch_ros.actions.Node(
-        package='joy', node_executable='joy_node',
+        package='joy', executable='joy_node',
         output='both', parameters=[joy_parameters_file]
     ))
 

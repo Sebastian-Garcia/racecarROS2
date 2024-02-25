@@ -1,0 +1,11 @@
+<!-- -*- mode: XML -*- -->
+<launch>
+
+  <node pkg="joy" exec="joy_node" name="joy_node" />
+
+  <!-- <node pkg="racecar" exec="joy_teleop.py" name="joy_teleop" /> -->
+  <group>
+    <include file="$(find-pkg-share racecar)/launch/joystick.launch.py"/>
+  </group>
+
+</launch>
