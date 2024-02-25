@@ -91,7 +91,8 @@ def generate_launch_description():
             package='racecar',
             executable='defaultCmd',
             name='zero_ackermann_cmd',
-            output='screen'
+            output='screen',
+            namespace='vesc'
         ),
         
         # High level MUX

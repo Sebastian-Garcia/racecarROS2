@@ -193,12 +193,12 @@ void AckermannCmdMux::configureFromParameters(const std::map<std::string, Parame
       values->sub_ = this->create_subscription<ackermann_msgs::msg::AckermannDriveStamped>(
         values->values_.topic, 10,
         [this, key](const ackermann_msgs::msg::AckermannDriveStamped::SharedPtr msg) {ackermannCmdCallback(msg, key);});
-      RCLCPP_DEBUG(
+      RCLCPP_INFO(
         get_logger(), "AckermannCmdMux : subscribed to '%s' on topic '%s'. pr: %" PRId64 ", to: %.2f",
         values->name_.c_str(), values->values_.topic.c_str(),
         values->values_.priority, values->values_.timeout);
     } else {
-      RCLCPP_DEBUG(
+      RCLCPP_INFO(
         get_logger(), "AckermannCmdMux : no need to re-subscribe to input topic '%s'",
         values->values_.topic.c_str());
     }

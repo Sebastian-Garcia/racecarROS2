@@ -9,7 +9,7 @@ class TopicRepublisherNode(Node):
         # Create a subscriber to the original topic
         self.subscription = self.create_subscription(
             AckermannDriveStamped,
-            '/vesc/ackermann_cmd_mux/input/safety',
+            '/vesc/input/safety',
             self.callback,
             10  # QoS profile depth
         )
@@ -17,7 +17,7 @@ class TopicRepublisherNode(Node):
         # Create a publisher for the republished topic
         self.publisher = self.create_publisher(
             AckermannDriveStamped,
-            '/vesc/low_level/ackermann_cmd_mux/input/safety',
+            '/vesc/low_level/input/safety',
             10  # QoS profile depth
         )
 

@@ -11,7 +11,7 @@ class ZeroAckermannCommandPublisherNode(Node):
         # Create a publisher for the AckermannDriveStamped command
         self.publisher = self.create_publisher(
             AckermannDriveStamped,
-            '/high_level/ackermann_cmd_mux/input/default',
+            '/vesc/high_level/input/default',
             10  # QoS profile depth
         )
 

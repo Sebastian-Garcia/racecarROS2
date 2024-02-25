@@ -5,7 +5,7 @@
     type: topic
     is_default: true
     interface_type: ackermann_msgs/msg/AckermannDriveStamped
-    topic_name: low_level/ackermann_cmd_mux/input/teleop
+    topic_name: low_level/input/teleop
     deadman_buttons: []
     message_value:
       drive-speed:
@@ -18,7 +18,7 @@
    human_control:
     type: topic
     interface_type: ackermann_msgs/msg/AckermannDriveStamped
-    topic_name: low_level/ackermann_cmd_mux/input/teleop
+    topic_name: low_level/input/teleop
     deadman_buttons: [4]
     axis_mappings:
       drive-speed:
