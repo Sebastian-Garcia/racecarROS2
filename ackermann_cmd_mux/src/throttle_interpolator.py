@@ -14,20 +14,20 @@ class InterpolateThrottle(Node):
         super().__init__('throttle_interpolator')
 
         # Declare all parameters before accessing them
-        self.declare_parameter("rpm_input_topic", "/vesc/commands/motor/unsmoothed_speed")
-        self.declare_parameter("rpm_output_topic", "/vesc/commands/motor/speed")
-        self.declare_parameter("servo_input_topic", "/vesc/commands/servo/unsmoothed_position")
-        self.declare_parameter("servo_output_topic", "/vesc/commands/servo/position")
+        self.declare_parameter("rpm_input_topic", "commands/motor/unsmoothed_speed")
+        self.declare_parameter("rpm_output_topic", "commands/motor/speed")
+        self.declare_parameter("servo_input_topic", "commands/servo/unsmoothed_position")
+        self.declare_parameter("servo_output_topic", "commands/servo/position")
         self.declare_parameter("max_acceleration", "default")
-        self.declare_parameter("vesc_driver/speed_max", "default")
-        self.declare_parameter("vesc_driver/speed_min", "default")
+        self.declare_parameter("vesc_driver.speed_max", "default")
+        self.declare_parameter("vesc_driver.speed_min", "default")
         self.declare_parameter("throttle_smoother_rate", "default")
         self.declare_parameter("speed_to_erpm_gain", "default")
         self.declare_parameter("max_servo_speed", "default")
         self.declare_parameter("steering_angle_to_servo_gain", "default")
         self.declare_parameter("servo_smoother_rate", "default")
-        self.declare_parameter("vesc_driver/servo_max", "default")
-        self.declare_parameter("vesc_driver/servo_min", "default")
+        self.declare_parameter("vesc_driver.servo_max", "default")
+        self.declare_parameter("vesc_driver.servo_min", "default")
         self.declare_parameter("steering_angle_to_servo_offset", "default")
         
 
@@ -40,16 +40,16 @@ class InterpolateThrottle(Node):
         self.servo_output_topic = self.get_parameter("servo_output_topic").get_parameter_value().string_value
 
         self.max_acceleration = self.get_parameter('max_acceleration').get_parameter_value().double_value
-        self.max_rpm = self.get_parameter('vesc_driver/speed_max').get_parameter_value().double_value
-        self.min_rpm = self.get_parameter('vesc_driver/speed_min').get_parameter_value().double_value
+        self.max_rpm = self.get_parameter('vesc_driver.speed_max').get_parameter_value().double_value
+        self.min_rpm = self.get_parameter('vesc_driver.speed_min').get_parameter_value().double_value
         self.throttle_smoother_rate = self.get_parameter('throttle_smoother_rate').get_parameter_value().double_value
         self.speed_to_erpm_gain = self.get_parameter('speed_to_erpm_gain').get_parameter_value().double_value
 
         self.max_servo_speed = self.get_parameter('max_servo_speed').get_parameter_value().double_value
         self.steering_angle_to_servo_gain = self.get_parameter('steering_angle_to_servo_gain').get_parameter_value().double_value
         self.servo_smoother_rate = self.get_parameter('servo_smoother_rate').get_parameter_value().double_value
-        self.max_servo = self.get_parameter('vesc_driver/servo_max').get_parameter_value().double_value
-        self.min_servo = self.get_parameter('vesc_driver/servo_min').get_parameter_value().double_value
+        self.max_servo = self.get_parameter('vesc_driver.servo_max').get_parameter_value().double_value
+        self.min_servo = self.get_parameter('vesc_driver.servo_min').get_parameter_value().double_value
 
 
         # Variables
@@ -77,9 +77,14 @@ class InterpolateThrottle(Node):
 
     def _publish_throttle_command(self):
         desired_delta = self.desired_rpm-self.last_rpm
+        #self.get_logger().info(f'Desired delta:  {desired_delta}')
         clipped_delta = max(min(desired_delta, self.max_delta_rpm), -self.max_delta_rpm)
+        
+        #self.get_logger().info(f'Clipped delta {clipped_delta}')
         smoothed_rpm = self.last_rpm + clipped_delta
-        self.last_rpm = smoothed_rpm         
+        self.last_rpm = smoothed_rpm    
+
+        #self.get_logger().info(f'Smoothed rpm {smoothed_rpm}')
         # print self.desired_rpm, smoothed_rpm
         msg = Float64()
         msg.data = float(smoothed_rpm)
@@ -88,7 +93,13 @@ class InterpolateThrottle(Node):
     def _process_throttle_command(self,msg):
         input_rpm = msg.data
         # Do some sanity clipping
+
+        #self.get_logger().info(f'Min rpm: {self.min_rpm}, and Max rpm: {self.max_rpm}')
+
         input_rpm = min(max(input_rpm, self.min_rpm), self.max_rpm)
+        
+        #self.get_logger().info(f'Input rpm 2 {input_rpm}')
+
         self.desired_rpm = input_rpm
 
     def _publish_servo_command(self):

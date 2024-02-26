@@ -275,7 +275,7 @@ VescDriver::CommandLimit::CommandLimit(
   // check if user's minimum value is outside of the range min_lower to max_upper
   auto param_min =
     node_ptr->declare_parameter(name + "_min", rclcpp::ParameterValue(0.0));
-
+  RCLCPP_INFO_ONCE(node_ptr->get_logger(), "My log message %s", name.c_str());
   if (param_min.get_type() != rclcpp::ParameterType::PARAMETER_NOT_SET) {
     if (min_lower && param_min.get<double>() < *min_lower) {
       lower = *min_lower;
